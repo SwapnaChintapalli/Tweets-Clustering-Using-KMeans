@@ -99,7 +99,7 @@ def sse(cluster,centroids,terms_all,k,l):
         t=    [ terms_all[x] for x in indices1[i]]
         for j in range(len(indices1[i])):
             sum=sum + math.pow(jaccard(t[j],cen_txt[i]),2)
-    print('SSE',sum, file =f)
+    print('Sum of Squared Errors:',sum, file =f)
             
             
 # updatin gthe centroids at every iteration
@@ -110,7 +110,6 @@ def up_date(id,cluster,terms_all,l,k):
     for i in range(k):
         indices.append([j for j, u in enumerate(cluster) if u == i])
         m=indices[i]
-        #print m
         #m gives the indices if the elements of every cluster k
         
         if (len(m) != 0):
@@ -118,83 +117,42 @@ def up_date(id,cluster,terms_all,l,k):
             sim =[ [jaccard(txt[i],txt[j]) for j in range(len(m))] for i in range(len(m))]
             #print sim
     #symmetric distance matrix    
-            #print [sum(i) for i in sim]
             f1=[sum(i) for i in sim]
-            #print f.index(min([sum(i) for i in sim]))
     #lower triangular matrix
             new_centxt_index.append( m[(f1.index(min([sum(i) for i in sim])))]) #index of the point closer to all the other points    
     new_centroid=[id[x] for x in new_centxt_index]
     return new_centroid
     
 
-            
-
-# def main():
-#     terms_all=[]
-#     id=[]
-# # with open(str(sys.argv[3]), 'r') as f:
-#     with open("Tweets.json", 'r') as f:
-#         for line in f:
-#             tweet = json.loads(line)
-#             t=tweet['text']
-#         
-#             tokens = preprocess(t)
-#             terms_all.append([term for term in tokens])
-#         
-#             d=tweet['id']
-#             id.append(d)
-#         
-# 
-#     l=len(terms_all)
-# # text_file = open(str(sys.argv[2]), "r")
-#     text_file = open("InitialSeeds.txt", "r")
-#     centroids = text_file.read().split(',')
-#     centroids= [x.strip('\n') for x in centroids]
-#     centroids= [int(x) for x in centroids]    #ids of centroids
-# # k=int(sys.argv[1])
-# # k=int(sys.argv[1])
-#     k=25
-#       
-#     kmeans(id,centroids,terms_all,l,k)
-
-
 if __name__ == '__main__':
     terms_all=[]
     id=[]
-# with open(str(sys.argv[3]), 'r') as f:
     user_input = raw_input("tweets-k-means")
     input_list = user_input.split(' ')
     numbers = [x.strip() for x in input_list]
-    print(numbers[0])
-    print("tweets-k-means")
-    
-    k = int(input(""))
-    initialSeeds = input("")
-    tweets = input("")
-    outputFile = input("")
+    if len(numbers) != 4:
+        k=25
+        initialSeeds = numbers[0]
+        tweets = numbers[1]
+        outputFile = numbers[2]
+    else:
+        k = int(numbers[0])
+        initialSeeds = numbers[1]
+        tweets = numbers[2]
+        outputFile = numbers[3]
     with open(str(tweets), 'r') as f:
         for line in f:
             tweet = json.loads(line)
             t=tweet['text']
-        
             tokens = preprocess(t)
             terms_all.append([term for term in tokens])
-        
             d=tweet['id']
             id.append(d)
         
-
     l=len(terms_all)
-# text_file = open(str(sys.argv[2]), "r")
-    
     text_file = open(str(initialSeeds), "r")
     centroids = text_file.read().split(',')
     centroids= [x.strip('\n') for x in centroids]
     centroids= [int(x) for x in centroids]    #ids of centroids
-#     k=int(sys.argv[1])
-# k=int(sys.argv[1])
-#     k=25
     f = open(str(outputFile), 'w')
     kmeans(id,centroids,terms_all,l,k)
-
-#     main()
